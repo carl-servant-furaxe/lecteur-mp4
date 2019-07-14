@@ -53,6 +53,22 @@ ex. https://ici.radio-canada.ca/nom-du-mandat/mp4.php?v=code-de-la-video
 C'est dans la partie PHP definie par la "switch" que le code determine quelle video afficher.
 Ici, c'est "code-de-la-video" qui serait trouvee par le systeme.
 
+```
+$video_id = filter_input(INPUT_GET, 'v');
+switch($video_id){
+	case 'code-de-la-video':
+		$video_image = 'data/traffic-club-cafe.jpg';
+		$video_title = 'Traffic Club Café';
+		$video_urls = array(
+			'large' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_2000.mp4',
+			'desktop' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_800.mp4',
+			'tablet' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_800.mp4',
+			'mobile' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_400.mp4',
+		);
+	break;
+}
+```
+
 Les variables definie entre "case 'code-de-la-video'" et "break" vont ecraser les valeurs par defaut vu plus tot.
 
 Ajouter autant de video que vous voulez en  utilisant le code suivant a l'interieur de la "switch".
