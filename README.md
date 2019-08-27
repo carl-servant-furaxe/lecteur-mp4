@@ -24,16 +24,24 @@ $video_urls = array(
 $cta_image = '';
 $cta_title = '';
 $cta_url = '';
+$pixel = '';
+$next = false;
 ```
 
-### Code destinee a la video
+### Code destinee au pixel
+| Variable      | Description |
+| :------------ | :---------- |
+| $pixel   | URL de l'image de pixel de reciblage |
+
+### Code destine a la video
 | Variable      | Description |
 | :------------ | :---------- |
 | $video_image  | URL de l'image "poster" qui s'affiche si la video n'est pas en lecteur |
 | $video_title  | Nom de la video qui sera utilisee pour identifier dans Google Analytics |
 | $video_urls   | URL vers les videos au format MP4, dans les differents bitrates |
+| $next   | CODE de la prochaine video |
 
-### Code destinee au "call-to-action" a la fin de la video
+### Code destine au "call-to-action" a la fin de la video
 Si vous ajoutez des valeurs a ces variables, une image de prise d'action sera affichee par dessus la video a la fin de la lecture.
 
 | Variable      | Description |
@@ -65,6 +73,8 @@ switch($video_id){
 			'tablet' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_800.mp4',
 			'mobile' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_400.mp4',
 		);
+		$pixel = 'ex. https://pubads.g.doubleclick.net/activity;dc_iu=/6642/DFPAudiencePixel;ord=1;dc_seg=835222774';
+		$next = 'episode-1';
 	break;
 }
 ```
@@ -83,6 +93,8 @@ Ajouter autant de video que vous voulez en  utilisant le code suivant a l'interi
 			'tablet' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_800.mp4',
 			'mobile' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_400.mp4',
 		);
+		$pixel = 'ex. https://pubads.g.doubleclick.net/activity;dc_iu=/6642/DFPAudiencePixel;ord=1;dc_seg=835222774';
+		$next = 'episode-1';
 	break;
 ```
 
