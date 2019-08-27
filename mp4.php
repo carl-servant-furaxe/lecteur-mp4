@@ -12,6 +12,8 @@ $video_urls = array(
 $cta_image = '';
 $cta_title = '';
 $cta_url = '';
+$pixel = '';
+$next = false;
 
 
 $video_id = filter_input(INPUT_GET, 'v');
@@ -25,6 +27,8 @@ switch($video_id){
 			'tablet' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_800.mp4',
 			'mobile' => 'https://medias-pub.radio-canada.ca/Y_NISSAN_DODD-Cafe_Trafic_2_min_colo_mix_400.mp4',
 		);
+		$pixel = 'ex. https://pubads.g.doubleclick.net/activity;dc_iu=/6642/DFPAudiencePixel;ord=1;dc_seg=835222774';
+		$next = 'episode-1';
 	break;
 }
 ?>
@@ -49,14 +53,41 @@ switch($video_id){
 	html, body, #screen, #player{ display: block; height: 100%; margin: 0; padding: 0; width: 100%; }
 	#button{ background: none; background-position: center center; background-size: cover; border: 0; cursor: pointer; display: none; height: 100%; left: 0; overflow: hidden; position: absolute; text-indent: -9999em; top: 0; width: 100%; z-index: 999; }
 	#cta{ background: rgba(0,0,0,0.75) url(<?php echo $cta_url; ?>) no-repeat center center; background-size: cover; border: 0; cursor: pointer; display: none; height: 100%; left: 0; overflow: hidden; position: absolute; text-indent: -9999em; top: 0; width: 100%; z-index: 999; }
+	#pixel{ left: -9999em; position: fixed; top: -9999em; }
 
 	#screen[data-is-mobile="true"] #button{ display: none !important; }
 	#screen[data-status="ready"] #button{ display: block; }
 	#screen[data-status="pause"] #button{ display: block; }
 	#screen[data-status="completed"] #cta{ display: block; }
+
+	#next{ background-color: rgba(0,0,0,0.75); display: none; position: fixed; left: 0; top: 0; height: 100%; width: 100%; z-index: 99999; }
+	#next .inner{ display: table-cell; vertical-align: middle; font-family: arial, sans-serif; font-weight: normal; text-align: center; }
+	#next .next-image{ margin-bottom: 2em; }
+	#next .next-image a{ display: block; margin: 0 auto; width: 700px; }
+	#next .next-image img{ border-radius: 10px; display: block; height: auto; width: 100%; }
+	#next .next-caption{ color: #fff; font-size: 26.5px; line-height: 1; }
+	#next .next-countdown{ color: #39bbe5; font-size: 114px; line-height: 1; }
+	html[data-countdown="true"] #next{ display: table; }
+	@media screen and (max-width: 800px), screen and (max-height: 800px ){
+		#next .next-image{ margin-bottom: 1.5em; }
+		#next .next-image a{ width: 400px; }
+		#next .next-caption{ font-size: 20px; }
+		#next .next-countdown{ font-size: 80px; }
+	}
+	@media screen and (max-width: 480px), screen and (max-height: 450px ){
+		#next .next-image{ margin-bottom: 1em; }
+		#next .next-image a{ width: 240px; }
+		#next .next-caption{ font-size: 16px; }
+		#next .next-countdown{ font-size: 40px; }
+	}
 	</style>
 </head>
 <body>
+
+<?php if($pixel !== ""): ?>
+<div id="pixel"><img src="<?php echo $pixel; ?>" alt="Pixel" height="1" width="1" /></div>
+<?php endif; ?>
+
 <div id="screen" data-status="init" data-is-mobile="false">
 	<video id="player" width="320" height="240" controls controlsList="nodownload" poster="<?php echo $video_image; ?>">
 		<source id="source" type="video/mp4">
@@ -66,6 +97,15 @@ switch($video_id){
 	<a id="cta" href="<?php echo $cta_url; ?>" target="_blank"><?php echo $cta_title; ?></a>
 <?php	endif; ?>
 </div>
+
+<?php if($next): ?>
+<div id="next"><div class="inner">
+	<div class="next-image"><a href="?v=<?php echo $next; ?>"><img src="data/next/<?php echo $next;?>.jpg" alt="" height="394" width="700" /></a></div>
+	<div class="next-caption">Prochain épisode dans &hellip;</div>
+	<div class="next-countdown"><span id="countdown">9</span></div>
+</div></div>
+<?php endif; ?>
+
 </body>
 </html>
 <script type="text/javascript">
@@ -73,6 +113,8 @@ switch($video_id){
 var sw = screen.width;
 
 (function($) {
+	var html = document.getElementById('html');
+	var countdown = document.getElementById('countdown');
 	var video_title = "<?php echo htmlspecialchars($video_title); ?>";
 	var screen = document.getElementById('screen');
 	var player = document.getElementById('player');
@@ -81,6 +123,7 @@ var sw = screen.width;
 
 	var timer;
 	var tracker;
+	var counter = 10;
 
 	if(sw >= 1220){
 		source.setAttribute('src', '<?php echo $video_urls["large"]; ?>');
@@ -116,6 +159,30 @@ var sw = screen.width;
 		screen.setAttribute('data-status','completed');
 		ga('send', 'event', 'MP4 Player', 'Finished', video_title);
 		console.log('send', 'event', 'MP4 Player', 'Finished', video_title);
+
+
+		if (player.exitFullscreen) {
+			player.exitFullscreen(); // Standard
+		} else if (player.webkitExitFullscreen) {
+			player.webkitExitFullscreen(); // Blink
+		} else if (player.mozCancelFullScreen) {
+			player.mozCancelFullScreen(); // Gecko
+		} else if (player.msExitFullscreen) {
+			player.msExitFullscreen(); // Old IE
+		}
+
+<?php if($next): ?>
+		setInterval(function(){
+			if(counter <= 1){
+				ga('send', 'event', 'MP4 Player', 'Redirect to', '<?php echo $next; ?>');
+				console.log('send', 'event', 'MP4 Player', 'Redirect to', '<?php echo $next; ?>');
+				window.location.href="?v=<?php echo $next; ?>";
+			}
+			html.setAttribute('data-countdown', true);
+			countdown.innerHTML = --counter;
+		}, 1000);
+<?php endif; ?>
+
 	});
 	player.addEventListener('error', function() {
 		screen.setAttribute('data-status','error');
